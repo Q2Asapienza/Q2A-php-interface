@@ -1,0 +1,6 @@
+[submodule "Requests"]
+	path = Requests
+	url = https://github.com/rmccue/Requests
+[submodule "simplehtmldom"]
+	path = simplehtmldom
+	url = https://github.com/simplehtmldom/simplehtmldom
