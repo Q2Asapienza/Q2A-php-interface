@@ -1,43 +1,31 @@
-# Q2A_Pi
+# Q2A php interface
 
-Interface for python for communicating with q2a.di.uniroma1.it
+Interface for PHP for communicating with q2a.di.uniroma1.it
 
 ## Setup
 
-To use the library simply clone it into your project directory
+To use the library simply clone or fork it into your project directory
 ```
-git clone https://github.com/fc-dev/Q2A_Pi
+git clone https://github.com/Q2Asapienza/Q2A-php-interface
 ```
 Or add it as a submodule if you are working in a git repository
 ```
-git submodule add https://github.com/fc-dev/Q2A_Pi
+git submodule add https://github.com/Q2Asapienza/Q2A-php-interface
 ```
 
-Then you can use it from python by simply importing it this way:
-```python
-import Q2A_Pi
+Then you can use it from python by simply including or requiring it:
+```php
+require './Q2A-php-interface/Q2A.php';
 ```
-or if you prefer to use the classes directly without having to write the package name:
-```python
-from Q2A_Pi import *
-```
-Check out the [wiki]() for basic usages example
+Check out the [wiki]() for basic usages example (just kidding, no examples for now)
 
 ### Prerequisites
 
-To run the program you need python (3.7.4) installed, and the libraries:
-```
-requests
-lxml
-cssselect
-```
-With their dependencies too.
+To run the program you need php installed (at least 5.6, 7.2 is preferred).
 
 ## Contributing
 
 If you want to help with this project contact me or do a pull request.
-
-
 
 ## Authors
 
