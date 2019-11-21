@@ -68,7 +68,7 @@ function Q2ADictToSerializable($q2a_dict){
 
 class Q2A{
     #region HIDDEN METHODS
-    function __construct($username = null, $password = null, $session_file = null, $category = "fondamenti-di-programmazione-19-20"){
+    public function __construct($username = null, $password = null, $session_file = null, $category = "fondamenti-di-programmazione-19-20"){
         #shit
         $this->LIKE_HEADERS = [
             "sec-fetch-mode" => "cors",
@@ -165,7 +165,7 @@ class Q2A{
     #endregion
 
     #region SESSION management
-    function sessionCreate(){
+    public function sessionCreate(){
         /**
          *Create a new requests session for comunicating with Q2A::
          *Creating a session is necessary for acting as a logged in user
@@ -195,7 +195,7 @@ class Q2A{
     }
 
     #region sessionfile
-    function sessionLoad($filename = "./data/q2a.ses"){
+    public function sessionLoad($filename = "./data/q2a.ses"){
         /**
          *Save current session to a file.
          *WARNING: SAVING CURRENT SESSION TO A FILE IS INSECURE AND AKIN TO SAVING PASSWORD TO A TEXT FILE, BE CAREFUL!
@@ -216,7 +216,7 @@ class Q2A{
         return $this->logged_in();
     }
 
-    function sessionSave($filename = "./data/q2a.ses"){
+    public function sessionSave($filename = "./data/q2a.ses"){
         /**
          *Save current session to a file.
          *WARNING: SAVING CURRENT SESSION TO A FILE IS INSECURE AND AKIN TO SAVING PASSWORD TO A TEXT FILE, BE CAREFUL!
@@ -231,17 +231,17 @@ class Q2A{
     #endregion
 
     #region PROFILE INFO
-    function logged_in(){
+    public function logged_in(){
         return strpos($this->session->get(URL_USER)->url, $this->username) !== false;
     }
 
-    function profileInfo(){
+    public function profileInfo(){
         return null;
     }
     #endregion
 
     #region Utility for user
-    function getQuestions($category = null){
+    public function getQuestions($category = null){
         /**
          *Get questions from all the pages.
          *
@@ -259,13 +259,13 @@ class Q2A{
             if(count($added) == 0){
                 break;
             }
-            $questions = array_merge($questions,$added);
+            $questions = $added + $questions;
             $page++;
         }
         return $questions;
     }
     
-    function getQuestionsFromPage($page = 1, $category = null){
+    public function getQuestionsFromPage($page = 1, $category = null){
         /**
          *Get questions from a page.
          *
@@ -280,10 +280,10 @@ class Q2A{
             $category = $this->category;
         }
 
-        return $this->questionsFromURL(URL_QUESTIONS . $category . "?start=" . ((page-1)*20));
+        return $this->questionsFromURL(URL_QUESTIONS . $category . "?start=" . (($page-1)*20));
     }
     
-    function getQuestionsFromActivities($category = null){
+    public function getQuestionsFromActivities($category = null){
         /**
          *Get questions from activities.
          *
@@ -299,14 +299,16 @@ class Q2A{
         }
         return $this->questionsFromURL(URL_ACTIVITIES . $category);
     }
-    function getAnswersFromQuestions($questions, $update=True){
+    
+    public function getAnswersFromQuestions($questions, $update=True){
         $answers = [];
         foreach($questions as $id => $question){
-            $answers = array_merge($answers,$this->getAnswersFromQuestion($questions[$id], $update));
+            $answers = $this->getAnswersFromQuestion($questions[$id], $update) + $answers;
         }
         return $answers;
     }
-    function getAnswersFromQuestion($question, $update=True){
+    
+    public function getAnswersFromQuestion($question, $update=True){
         $pageAnswers = $this->getHTMLFromURL(URL_BASE . $question->{Keys::ID})->find("div.answer");
         $answers = [];
         foreach($pageAnswers as $answerDiv){
@@ -337,15 +339,15 @@ class Q2A{
         return $answers;
     }
 
-    function getCommentsFromAnswers($answers, $update=True){
+    public function getCommentsFromAnswers($answers, $update=True){
         $comments = [];
         foreach ($answers as $id => $answer) {
-            $comments = array_merge($comments,$this->getCommentsFromAnswer($answers[$id],$update));
+            $comments = $this->getCommentsFromAnswer($answers[$id],$update) + $comments;
         } 
         return $comments;
     }
 
-    function getCommentsFromAnswer($answer, $update=True){
+    public function getCommentsFromAnswer($answer, $update=True){
         $answerComments = $this->getHTMLFromURL(URL_BASE . $answer->{Keys::PARENT}->{Keys::ID})->find('#a'.$answer->{Keys::ID}.' .comment');
         $comments = [];
         foreach($answerComments as $commentDiv){
@@ -367,7 +369,7 @@ class Q2A{
         return $comments;
     }
 
-    function sendVote($like, $upVote = True){
+    public function sendVote($like, $upVote = True){
 
         #navigate to Question otherwise site goes MAD (and meanwhile i update code)
         $question_id = $like['question']['id'];
@@ -408,15 +410,15 @@ class Q2A{
     }
     #endregion
 
-    function getLikesFromQuestions($questions){
+    public function getLikesFromQuestions($questions){
         $likes = [];
         foreach ($questions as $id => $question) {
-            $likes = array_merge($likes,$this->getLikesFromQuestion($questions[$id]));
+            $likes = $this->getLikesFromQuestion($questions[$id]) + $likes;
         } 
         return $likes;
     }
 
-    function getLikesFromQuestion($question){
+    public function getLikesFromQuestion($question){
         $likes = [];
         $tree = $this->getHTMLFromURL(URL_BASE.$question->{Keys::ID});
         foreach($tree->find(".qa-voting") as $like){
